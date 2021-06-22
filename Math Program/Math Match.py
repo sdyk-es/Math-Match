@@ -1,7 +1,7 @@
-from getimage import get_image
 import tkinter as tk
 import BetterShadows as bsha
-import os
+import math
+from functools import partial
 
 class MathMatch():
     def __init__(self):
@@ -25,7 +25,7 @@ class MathMatch():
 
 
         #Iterate through frames, initialize them and put them in array
-        for F in (MainMenu, HelpScreen):
+        for F in (MainMenu, HelpScreen, GameScreen):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -62,7 +62,7 @@ class MainMenu(tk.Frame):
             B[1].grid_propagate(False)
         
         #Set button commands
-        self.play_button.button.configure(command = self.play)
+        self.play_button.button.configure(command = lambda : controller.show_frame(GameScreen))
         self.help_button.button.configure(command = lambda : controller.show_frame(HelpScreen))
         self.quit_button.button.configure(command = quit)
 
@@ -72,14 +72,32 @@ class MainMenu(tk.Frame):
         self.title.grid(row = 0, column = 0, columnspan=3, pady=50)
 
 
-    #Commands for buttons to call
-    def play(self):
-        print('Play')
-
 #Help menu frame, currently only here for testing
 class HelpScreen(tk.Frame):
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container, bg = 'green')
+
+
+#Main gameplay screen
+class GameScreen(tk.Frame):
+    def __init__(self, container, controller):
+        tk.Frame.__init__(self, container, bg = '#E8E8E8')
+        
+        self.buttons = []
+
+        for i in range(8):
+            self.buttons.append(bsha.BetterShadow(100, 100, self, str(i)))
+            self.buttons[i].grid(row = math.floor(i/4), column = i%4)
+            self.buttons[i].button.configure(command = partial(self.colour,i))
+
+        
+
+
+    def colour(self, index):
+        self.buttons[index].button.configure(bg = 'green')
+        
+
+
 
 MathMatch()
 tk.mainloop()

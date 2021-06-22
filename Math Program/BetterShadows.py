@@ -33,6 +33,6 @@ class BetterShadow(tk.Frame):
         tk.Label(self, image = self.corner, width = 5, height = 5, bd = 0).grid(row = int(height/5+1), column = int(width/5+1))
 
         #Add Text To Frame
-        self.button = tk.Button(inframe, text = text, bg ='white', font = ("Open Sans","24"), borderwidth=0)
+        self.button = tk.Button(inframe, text = text, bg ='white', font = ("Open Sans Semibold","24"), borderwidth=0)
         self.button.grid(row = 0, column = 0, sticky = 'nesw')
         self.button.grid_propagate(False)
