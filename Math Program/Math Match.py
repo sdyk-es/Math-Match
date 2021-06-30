@@ -1,7 +1,11 @@
 import tkinter as tk
+from tkinter.constants import FALSE
 import BetterShadows as bsha
-import math
+import math, random
 from functools import partial
+
+#Should probably include colour constants here
+
 
 class MathMatch():
     def __init__(self):
@@ -77,25 +81,59 @@ class HelpScreen(tk.Frame):
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container, bg = 'green')
 
-
 #Main gameplay screen
 class GameScreen(tk.Frame):
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container, bg = '#E8E8E8')
-        
+        self.grid_columnconfigure((0,1,2,3), weight = 1)
+
+        #Create list of equations for the buttons to display
+        self.eqs = []
+
+        self.operations = ["add", "subtract","divide","multiply"]
+        for i in range(4):
+            x = random.randint(1,10) #Inclusive
+            for i in range(2):
+                self.eqs.append(self.algebra_create(random.choice(self.operations), x, 0))
+        random.shuffle(self.eqs)
+
+        #Tuples in self.eqs are in the form of (Equation, X Value, Answered?)
+
+        #Initialise buttons array
         self.buttons = []
 
+        #Create 8 buttons
         for i in range(8):
-            self.buttons.append(bsha.BetterShadow(100, 100, self, str(i)))
+            self.buttons.append(bsha.BetterShadow(190, 100, self, self.eqs[i][0]))
             self.buttons[i].grid(row = math.floor(i/4), column = i%4)
-            self.buttons[i].button.configure(command = partial(self.colour,i))
+            self.buttons[i].button.configure(command = partial(self.press,i))
 
+        #Initialise whether a button is pressed or not
+        self.pressed = False
+
+    def press(self, idx):
+        if self.pressed == False:
+            self.buttons[idx].button.configure(bg = '#F0F0F0')
+            self.pressed = True
+        elif self.pressed == True:
+            self.buttons[idx].button.configure(bg = 'Green')
+            self.pressed = False
+        print(self.eqs[idx][1])
         
+    def algebra_create(self, operation, x):
+        if operation == "subtract":
+            ans = random.randint(1,20-x) #Inclusive
+            return(str(ans+x)+"−X="+str(ans), x)
+        elif operation == "add":
+            ans = random.randint(x+1,20) #Inclusive
+            return(str(ans-x)+"+X="+str(ans), x)
+        elif operation == "divide":
+            ans = random.choice(list(range(2,math.floor(20/x)+1)))
+            return(str(ans*x)+"÷X="+str(ans), x)
+        elif operation == "multiply":
+            num = random.choice(list(range(2,math.floor(20/x)+1)))
+            return(str(num)+"×X="+str(num*x), x)
 
-
-    def colour(self, index):
-        self.buttons[index].button.configure(bg = 'green')
-        
 
 
 
