@@ -94,7 +94,7 @@ class GameScreen(tk.Frame):
         for i in range(4):
             x = random.randint(1,10) #Inclusive
             for i in range(2):
-                self.eqs.append(self.algebra_create(random.choice(self.operations), x, 0))
+                self.eqs.append(self.algebra_create(random.choice(self.operations), x)+(False,))
         random.shuffle(self.eqs)
 
         #Tuples in self.eqs are in the form of (Equation, X Value, Answered?)
@@ -111,15 +111,23 @@ class GameScreen(tk.Frame):
         #Initialise whether a button is pressed or not
         self.pressed = False
 
+    #Function to run when a button is clicked
     def press(self, idx):
         if self.pressed == False:
             self.buttons[idx].button.configure(bg = '#F0F0F0')
             self.pressed = True
-        elif self.pressed == True:
-            self.buttons[idx].button.configure(bg = 'Green')
+            self.button_down = idx
+        elif self.pressed == True and self.button_down != idx:
+            if self.eqs[idx][1] == self.eqs[self.button_down][1]:
+                colour = '#03fc8c'
+            else:
+                colour = '#e32222'
+            self.buttons[idx].button.configure(bg = colour)
+            self.buttons[self.button_down].button.configure(bg = colour)
             self.pressed = False
-        print(self.eqs[idx][1])
+        print(self.eqs[idx])
         
+    #Function for creating the problems on the buttons
     def algebra_create(self, operation, x):
         if operation == "subtract":
             ans = random.randint(1,20-x) #Inclusive
@@ -133,9 +141,6 @@ class GameScreen(tk.Frame):
         elif operation == "multiply":
             num = random.choice(list(range(2,math.floor(20/x)+1)))
             return(str(num)+"×X="+str(num*x), x)
-
-
-
 
 MathMatch()
 tk.mainloop()
