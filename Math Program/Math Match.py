@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter.constants import FALSE
+from typing import Text
 import BetterShadows as bsha
 import math, random
 from functools import partial
@@ -94,7 +95,7 @@ class GameScreen(tk.Frame):
         for i in range(4):
             x = random.randint(1,10) #Inclusive
             for i in range(2):
-                self.eqs.append(self.algebra_create(random.choice(self.operations), x)+(False,))
+                self.eqs.append(self.algebra_create(random.choice(self.operations), x) + [False])
         random.shuffle(self.eqs)
 
         #Tuples in self.eqs are in the form of (Equation, X Value, Answered?)
@@ -105,42 +106,57 @@ class GameScreen(tk.Frame):
         #Create 8 buttons
         for i in range(8):
             self.buttons.append(bsha.BetterShadow(190, 100, self, self.eqs[i][0]))
-            self.buttons[i].grid(row = math.floor(i/4), column = i%4)
+            self.buttons[i].grid(row = math.floor(i/4)+1, column = i%4)
             self.buttons[i].button.configure(command = partial(self.press,i))
 
         #Initialise whether a button is pressed or not
         self.pressed = False
 
+        #Create container to hold the text widget
+        self.text_container = tk.Frame(self, bg = 'red', width = 800, height=200)
+        self.text_container.grid(column = 0, row = 0, columnspan=8, pady=(40,40))
+
+        self.text_container.grid_rowconfigure(0, weight = 1)
+        self.text_container.grid_columnconfigure(0, weight = 1)
+        self.text_container.grid_propagate(False)
+
+        #Create text widget
+        self.text = tk.Text(self.text_container, bg = 'White', height = 1, bd = 0)
+        self.text.grid(column = 0, row = 0, sticky = 'NESW')
+
     #Function to run when a button is clicked
     def press(self, idx):
+        # if self.eqs[idx][2] == False:
         if self.pressed == False:
             self.buttons[idx].button.configure(bg = '#F0F0F0')
             self.pressed = True
             self.button_down = idx
         elif self.pressed == True and self.button_down != idx:
-            if self.eqs[idx][1] == self.eqs[self.button_down][1]:
+            if self.eqs[idx][1] == self.eqs[self.button_down][1]: #If buttons have the same value
                 colour = '#03fc8c'
-            else:
+                self.eqs[idx][2] = True
+                self.eqs[self.button_down][2] = True
+            else: 
                 colour = '#e32222'
             self.buttons[idx].button.configure(bg = colour)
             self.buttons[self.button_down].button.configure(bg = colour)
             self.pressed = False
         print(self.eqs[idx])
         
-    #Function for creating the problems on the buttons
+    #Function for creating the equations on the buttons
     def algebra_create(self, operation, x):
         if operation == "subtract":
             ans = random.randint(1,20-x) #Inclusive
-            return(str(ans+x)+"−X="+str(ans), x)
+            return([str(ans+x)+"−X="+str(ans), x])
         elif operation == "add":
             ans = random.randint(x+1,20) #Inclusive
-            return(str(ans-x)+"+X="+str(ans), x)
+            return([str(ans-x)+"+X="+str(ans), x])
         elif operation == "divide":
             ans = random.choice(list(range(2,math.floor(20/x)+1)))
-            return(str(ans*x)+"÷X="+str(ans), x)
+            return([str(ans*x)+"÷X="+str(ans), x])
         elif operation == "multiply":
             num = random.choice(list(range(2,math.floor(20/x)+1)))
-            return(str(num)+"×X="+str(num*x), x)
+            return([str(num)+"×X="+str(num*x), x])
 
 MathMatch()
 tk.mainloop()
