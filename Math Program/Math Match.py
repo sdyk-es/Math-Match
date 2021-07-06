@@ -88,6 +88,14 @@ class GameScreen(tk.Frame):
         tk.Frame.__init__(self, container, bg = '#E8E8E8')
         self.grid_columnconfigure((0,1,2,3), weight = 1)
 
+        #Create a container for the back button
+        self.back_container = tk.Frame(self,bg = 'red')
+        self.back_container.grid()
+
+        #Create a back button
+        self.back_button = bsha.BetterShadow(90, 40, self, "BACK")
+        self.back_button.grid(row = 0, column = 0, pady = 0)
+
         #Create list of equations for the buttons to display
         self.eqs = []
 
@@ -105,24 +113,28 @@ class GameScreen(tk.Frame):
 
         #Create 8 buttons
         for i in range(8):
-            self.buttons.append(bsha.BetterShadow(190, 100, self, self.eqs[i][0]))
-            self.buttons[i].grid(row = math.floor(i/4)+1, column = i%4)
+            self.buttons.append(bsha.BetterShadow(190, 120, self, self.eqs[i][0]))
+            self.buttons[i].grid(row = math.floor(i/4)+2, column = i%4)
             self.buttons[i].button.configure(command = partial(self.press,i))
 
         #Initialise whether a button is pressed or not
         self.pressed = False
 
         #Create container to hold the text widget
-        self.text_container = tk.Frame(self, bg = 'red', width = 800, height=200)
-        self.text_container.grid(column = 0, row = 0, columnspan=8, pady=(40,40))
+        self.text_container = tk.Frame(self, bg = 'red', width = 800, height=190)
+        self.text_container.grid(column = 0, row = 1, columnspan=8, pady=(0,10))
 
         self.text_container.grid_rowconfigure(0, weight = 1)
         self.text_container.grid_columnconfigure(0, weight = 1)
         self.text_container.grid_propagate(False)
 
         #Create text widget
-        self.text = tk.Text(self.text_container, bg = 'White', height = 1, bd = 0)
+        self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","56"), fg = "black")
         self.text.grid(column = 0, row = 0, sticky = 'NESW')
+        self.text.insert('end', "Time:\nScore:")
+        self.text.configure(selectbackground=self.text.cget('bg'), selectforeground=self.text.cget('fg'))
+
+        self.text.configure(state = tk.DISABLED)
 
     #Function to run when a button is clicked
     def press(self, idx):
