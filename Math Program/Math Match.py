@@ -88,14 +88,10 @@ class GameScreen(tk.Frame):
         tk.Frame.__init__(self, container, bg = '#E8E8E8')
         self.grid_columnconfigure((0,1,2,3), weight = 1)
 
-        #Create a container for the back button
-        self.back_container = tk.Frame(self,bg = 'red')
-        self.back_container.grid()
-
         #Create a back button
         self.back_button = bsha.BetterShadow(90, 40, self, "BACK")
-        self.back_button.grid(row = 0, column = 0, pady = 0)
-
+        self.back_button.grid(row = 0, column = 0, pady = 0, sticky = "W")
+        self.back_button.button.configure(command = lambda : controller.show_frame(MainMenu))
         #Create list of equations for the buttons to display
         self.eqs = []
 
@@ -131,10 +127,24 @@ class GameScreen(tk.Frame):
         #Create text widget
         self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","56"), fg = "black")
         self.text.grid(column = 0, row = 0, sticky = 'NESW')
-        self.text.insert('end', "Time:\nScore:")
+        self.text.insert('end', "Time:\nScore: ")
         self.text.configure(selectbackground=self.text.cget('bg'), selectforeground=self.text.cget('fg'))
-
+        self.text.insert('end', "0", ("Score"))
         self.text.configure(state = tk.DISABLED)
+
+        self.score = 0
+
+    def change_score(self, increment):
+        self.score += increment
+        self.text.configure(state = tk.NORMAL)
+        self.text.insert("Score.first", str(self.score), ("New_Score"))
+        self.text.delete("Score.first", "Score.last")
+        self.text.tag_add("Score","New_Score.first","New_Score.last")
+        self.text.configure(state = tk.DISABLED)
+
+
+    def timer(self, remaining):
+        #PUT CODE HERE
 
     #Function to run when a button is clicked
     def press(self, idx):
@@ -148,13 +158,14 @@ class GameScreen(tk.Frame):
                 colour = '#03fc8c'
                 self.eqs[idx][2] = True
                 self.eqs[self.button_down][2] = True
+                self.change_score(100)
             else: 
                 colour = '#e32222'
             self.buttons[idx].button.configure(bg = colour)
             self.buttons[self.button_down].button.configure(bg = colour)
             self.pressed = False
-        print(self.eqs[idx])
-        
+            self.change_score(-500)
+
     #Function for creating the equations on the buttons
     def algebra_create(self, operation, x):
         if operation == "subtract":
