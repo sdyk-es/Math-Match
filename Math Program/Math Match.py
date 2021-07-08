@@ -18,34 +18,39 @@ class MathMatch():
         window.title('Math Match')
 
         #Container to hold the other frames
-        container = tk.Frame(window)
-        container.pack(side = "top", fill = "both", expand = True)
+        self.container = tk.Frame(window)
+        self.container.pack(side = "top", fill = "both", expand = True)
 
-        container.grid_rowconfigure(0, weight = 1)
-        container.grid_columnconfigure(0, weight = 1)
+        self.container.grid_rowconfigure(0, weight = 1)
+        self.container.grid_columnconfigure(0, weight = 1)
 
+
+        ##ORIGINAL FRAME SETUP
 
         #Initialize the array of frames
-        self.frames = {}
+        # self.frames = {}
 
 
-        #Iterate through frames, initialize them and put them in array
-        for F in (MainMenu, HelpScreen, GameScreen):
+        # #Iterate through frames, initialize them and put them in array
+        # for F in (MainMenu, HelpScreen, GameScreen):
 
-            frame = F(container, self)
-            self.frames[F] = frame
+        #     frame = F(container, self)
+        #     self.frames[F] = frame
 
-            frame.grid(row = 0, column = 0, sticky ="nsew")
+        #     frame.grid(row = 0, column = 0, sticky ="nsew")
 
 
-        #Make Main Menu the first frame to be seen
+        # #Make Main Menu the first frame to be seen
+        self.frame = MainMenu(self.container, self)
         self.show_frame(MainMenu)
 
-
     #Function to show the desired frame
-    def show_frame(self, cont):
-        frame = self.frames[cont]
-        frame.tkraise()
+    def show_frame(self, F):
+        self.frame.destroy()
+        # frame = self.frames[cont]
+        # frame.tkraise()
+        self.frame = F(self.container, self)
+        self.frame.grid(row = 0, column = 0, sticky ="nsew")
 
 
 #Main menu and the frame the game starts up with
@@ -90,7 +95,7 @@ class GameScreen(tk.Frame):
 
         #Create a back button
         self.back_button = bsha.BetterShadow(90, 40, self, "BACK")
-        self.back_button.grid(row = 0, column = 0, pady = 0, sticky = "W")
+        self.back_button.grid(row = 0, column = 0, pady = (2,0), padx=(2,0), sticky = "W")
         self.back_button.button.configure(command = lambda : controller.show_frame(MainMenu))
         #Create list of equations for the buttons to display
         self.eqs = []
@@ -127,13 +132,19 @@ class GameScreen(tk.Frame):
         #Create text widget
         self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","56"), fg = "black")
         self.text.grid(column = 0, row = 0, sticky = 'NESW')
-        self.text.insert('end', "Time:\nScore: ")
+        self.text.insert('end', "Time: ")
+        self.text.insert('end', "0", ("Time"))
+        self.text.insert('end',"\nScore: ")
         self.text.configure(selectbackground=self.text.cget('bg'), selectforeground=self.text.cget('fg'))
         self.text.insert('end', "0", ("Score"))
         self.text.configure(state = tk.DISABLED)
 
         self.score = 0
+        self.red_buttons = []
 
+        self.timer(0)
+
+    #Function to change the displayed value of the score
     def change_score(self, increment):
         self.score += increment
         self.text.configure(state = tk.NORMAL)
@@ -142,13 +153,31 @@ class GameScreen(tk.Frame):
         self.text.tag_add("Score","New_Score.first","New_Score.last")
         self.text.configure(state = tk.DISABLED)
 
+    #Function to change the displayed value of the time
+    def change_time(self, time):
+        self.text.configure(state = tk.NORMAL)
+        self.text.insert("Time.first", "{:.0f}".format(time), ("New_Time"))
+        self.text.delete('Time.first', "Time.last")
+        self.text.tag_add("Time","New_Time.first","New_Time.last")
+        self.text.configure(state = tk.DISABLED)
 
-    def timer(self, remaining):
-        #PUT CODE HERE
+    #Timer to run during gameplay
+    def timer(self, passed = None):
+        if passed is not None:
+            self.passed = passed
+
+        self.change_time(self.passed)
+        self.passed = self.passed + 1
+        self.timing = self.after(1000, self.timer)
+
 
     #Function to run when a button is clicked
     def press(self, idx):
         # if self.eqs[idx][2] == False:
+        for button in self.red_buttons:
+            self.buttons[button].button.configure(bg = "white")
+        self.red_buttons = []
+
         if self.pressed == False:
             self.buttons[idx].button.configure(bg = '#F0F0F0')
             self.pressed = True
@@ -161,10 +190,12 @@ class GameScreen(tk.Frame):
                 self.change_score(100)
             else: 
                 colour = '#e32222'
+                self.change_score(-50)
+                self.red_buttons.extend([idx,self.button_down])
+            
             self.buttons[idx].button.configure(bg = colour)
             self.buttons[self.button_down].button.configure(bg = colour)
             self.pressed = False
-            self.change_score(-500)
 
     #Function for creating the equations on the buttons
     def algebra_create(self, operation, x):
