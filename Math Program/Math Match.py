@@ -92,6 +92,7 @@ class GameScreen(tk.Frame):
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container, bg = '#E8E8E8')
         self.grid_columnconfigure((0,1,2,3), weight = 1)
+        self.controller = controller
 
         #Create a back button
         self.back_button = bsha.BetterShadow(90, 40, self, "BACK")
@@ -141,6 +142,7 @@ class GameScreen(tk.Frame):
 
         self.score = 0
         self.red_buttons = []
+        self.matches = 0
 
         self.timer(0)
 
@@ -188,6 +190,12 @@ class GameScreen(tk.Frame):
                 self.eqs[idx][2] = True
                 self.eqs[self.button_down][2] = True
                 self.change_score(100)
+                self.matches += 1
+                if self.matches >= len(self.eqs)/2:
+                    print(self.score)
+                    self.controller.show_frame(MainMenu)
+                    return
+
             else: 
                 colour = '#e32222'
                 self.change_score(-50)
