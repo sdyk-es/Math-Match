@@ -6,11 +6,11 @@ class BetterShadow(tk.Frame):
         tk.Frame.__init__(self, parent, width = width+5, height = height+5, bg = "RED", borderwidth=0)
 
         #Prepare images 
-        self.bottom = tk.PhotoImage(file="assets/Shadow2.gif")
-        self.side = tk.PhotoImage(file="assets/SideShadow2.gif")
-        self.sidetop = tk.PhotoImage(file="assets/SideShadowTop2B.gif")
-        self.bottomedge = tk.PhotoImage(file="assets/ShadowEdge2B.gif")
-        self.corner = tk.PhotoImage(file="assets/ShadowCorner2.gif")
+        self.bottom = tk.PhotoImage(file="assets/Shadows/Shadow2.gif")
+        self.side = tk.PhotoImage(file="assets/Shadows/SideShadow2.gif")
+        self.sidetop = tk.PhotoImage(file="assets/Shadows/SideShadowTop2B.gif")
+        self.bottomedge = tk.PhotoImage(file="assets/Shadows/ShadowEdge2B.gif")
+        self.corner = tk.PhotoImage(file="assets/Shadows/ShadowCorner2.gif")
 
 
         #Set Up Main Inner Frame
