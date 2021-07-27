@@ -26,8 +26,8 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 0
-        self.final_time = 0
+        self.final_score = 999
+        self.final_time = 99
 
         ##ORIGINAL FRAME SETUP
 
@@ -46,7 +46,7 @@ class MathMatch():
 
         # #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(MainMenu)
+        self.show_frame(ResultsScreen)
 
     #Function to show the desired frame
     def show_frame(self, F):
@@ -84,8 +84,6 @@ class MainMenu(tk.Frame):
         self.titleimage = tk.PhotoImage(file = 'assets/Titles/Title-Montserrat-Blue.png')
         self.title = tk.Label(self, image = self.titleimage, width = 800, height = 100, bg = '#E8E8E8')
         self.title.grid(row = 0, column = 0, columnspan=3, pady=50)
-
-        
 
 
 #Help menu frame, currently only here for testing
@@ -199,7 +197,6 @@ class GameScreen(tk.Frame):
     def timer(self, passed = None):
         if passed is not None:
             self.passed = passed
-
         self.change_time(self.passed)
         self.passed = self.passed + 1
         self.timing = self.after(1000, self.timer)
@@ -221,7 +218,10 @@ class GameScreen(tk.Frame):
                     colour = '#03fc8c'
                     self.eqs[idx][2] = True
                     self.eqs[self.button_down][2] = True
-                    self.change_score(100)
+                    if self.passed < 90:
+                        self.change_score(101-self.passed)
+                    else:
+                        self.change_score(10)
                     self.matches += 1
                     if self.matches >= len(self.eqs)/2:
                         controller.show_frame(ResultsScreen)
@@ -290,9 +290,6 @@ class ResultsScreen(tk.Frame):
         #Set button commands
         self.play_button.button.configure(command = lambda : controller.show_frame(GameScreen))
         self.menu_button.button.configure(command = lambda : controller.show_frame(MainMenu))
-
-
-
 
 
 MathMatch()
