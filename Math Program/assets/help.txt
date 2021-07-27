@@ -1,8 +1,8 @@
-Math Match is game designed to allow you to test and 
-practice your algebra skills.
+Math Match is a game designed to test and practice algebra skills.
  
-Upon starting the game you will be presented with a 
-number of algebraic equations. Each equation will have 
-another matching equation with the same value of x. 
-Match them up by clicking on one equation then clicking on another equation with the same value of x. Correct 
-matches will award you points and incorect matches will take points away.
+Upon starting the game you will be presented with a set of algebraic 
+equations on buttons. Each equation is part of a pair, in which both 
+equations share the same value of x. Your objective is to match up 
+these equations. To match them up, click on two buttons that have 
+the same x value. If your match is correct, you'll be awarded points. 
+If you get it wrong the match wont be set and you will lose points.

@@ -16,6 +16,7 @@ class MathMatch():
         window.geometry('809x500')
         window.resizable(False,False)
         window.title('Math Match')
+        window.tk.call('wm', 'iconphoto', window._w, tk.PhotoImage(file = 'assets/icon.png'))
 
         #Container to hold the other frames
         self.container = tk.Frame(window)
@@ -94,14 +95,14 @@ class HelpScreen(tk.Frame):
         # self.grid_columnconfigure((0,1), weight = 1)
 
         #Container to hold the text
-        self.text_container = tk.Frame(self, bg = '#E8E8E8', width = 809, height=500)
-        self.text_container.grid(column = 0, row = 0)
+        self.text_container = tk.Frame(self, bg = '#E8E8E8', width = 800, height=500)
+        self.text_container.grid(column = 0, row = 0, padx = 5, pady=(30,0))
         self.text_container.grid_rowconfigure(0, weight = 1)
         self.text_container.grid_columnconfigure(0, weight = 1)
         self.text_container.grid_propagate(False)
 
         #Create text widget
-        self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","22"), fg = "black")
+        self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","18"), fg = "black")
         self.text.grid(column = 0, row = 0, sticky = 'NESW', padx = (5,0))
 
         #Inset text
@@ -113,10 +114,9 @@ class HelpScreen(tk.Frame):
         self.text.configure(selectbackground=self.text.cget('bg'), selectforeground=self.text.cget('fg'))
         self.text.configure(state = tk.DISABLED)
 
-
         #Back Button
         self.back_button = bsha.BetterShadow(200, 100, self, "BACK")
-        self.back_button.grid(row = 0, column = 0, pady = (350,0))
+        self.back_button.grid(row = 0, column = 0, pady = (310,0))
         self.back_button.button.configure(command = lambda : controller.show_frame(MainMenu))
 
 
@@ -265,7 +265,7 @@ class ResultsScreen(tk.Frame):
 
         #Container to hold the text
         self.text_container = tk.Frame(self, bg = 'red', width = 750, height=190)
-        self.text_container.grid(column = 0, row = 0, columnspan = 3, pady=(50,0))
+        self.text_container.grid(column = 0, row = 0, columnspan = 3, pady=(50,0), padx=(25,0))
 
         self.text_container.grid_rowconfigure(0, weight = 1)
         self.text_container.grid_columnconfigure(0, weight = 1)
@@ -277,7 +277,6 @@ class ResultsScreen(tk.Frame):
         self.text.insert('end', "Final Score: " + str(controller.final_score) + " Points\nFinal Time: " + str(controller.final_time) + " Seconds")
         self.text.configure(selectbackground=self.text.cget('bg'), selectforeground=self.text.cget('fg'))
         self.text.configure(state = tk.DISABLED)
-
 
         #Create two buttons
         self.play_button = bsha.BetterShadow(300, 150, self, "PLAY AGAIN")
