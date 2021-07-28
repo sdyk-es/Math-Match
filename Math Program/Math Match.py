@@ -261,30 +261,56 @@ class GameScreen(tk.Frame):
 class ResultsScreen(tk.Frame):
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container, bg = '#E8E8E8')
-        self.grid_columnconfigure((0,1), weight = 1)
+        self.grid_columnconfigure((0,1,2), weight = 1)
+        self.grid_rowconfigure((0), weight = 1)
 
         #Container to hold the text
-        self.text_container = tk.Frame(self, bg = 'red', width = 750, height=190)
-        self.text_container.grid(column = 0, row = 0, columnspan = 3, pady=(50,0), padx=(25,0))
+        self.text_container = tk.Frame(self, bg = 'red', width = 450, height=190)
+        self.text_container.grid(column = 0, row = 0, columnspan = 2, pady=(50,0), padx=(30,0),sticky='WN')
 
         self.text_container.grid_rowconfigure(0, weight = 1)
         self.text_container.grid_columnconfigure(0, weight = 1)
         self.text_container.grid_propagate(False)
 
         #Create text widget
-        self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","48"), fg = "black")
+        self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","30"), fg = "black")
         self.text.grid(column = 0, row = 0, sticky = 'NESW')
         self.text.insert('end', "Final Score: " + str(controller.final_score) + " Points\nFinal Time: " + str(controller.final_time) + " Seconds")
         self.text.configure(selectbackground=self.text.cget('bg'), selectforeground=self.text.cget('fg'))
         self.text.configure(state = tk.DISABLED)
 
+        #Leaderboard
+        self.leaderboard_container = tk.Frame(self ,bg = 'white', width = 280, height=450)
+        self.leaderboard_container.grid(column = 2, row = 0, rowspan=3, padx=(10,10))
+
+        #Input
+        self.input_container = tk.Frame(self, width = 330, height = 30)
+        self.input_container.grid(column = 0, row = 1, columnspan=2,sticky='W', padx=(30,0))
+        self.input_container.grid_rowconfigure(0, weight = 1)
+        self.input_container.grid_columnconfigure(0, weight = 1)
+        self.input_container.grid_propagate(False)
+
+        self.input = tk.Entry(self.input_container, font = ("Open Sans Semibold","22"))
+        self.input.grid(row=0,column=0, sticky= 'NESW')
+        self.input_container.grid_propagate(False)
+
+        #Submit Button
+        self.enter_button_container = tk.Frame(self, width=120, height=30)
+        self.enter_button_container.grid(column=0,row=1,columnspan=2,sticky='W',padx=(363,0))
+        self.enter_button_container.grid_columnconfigure(0,weight=1)
+        self.enter_button_container.grid_rowconfigure(0,weight=1)
+        self.enter_button_container.grid_propagate(False)
+
+        self.enter_button = tk.Button(self.enter_button_container,text="SUBMIT",bg = 'white',relief = 'flat',bd=0,font = ("Open Sans Semibold","22"))
+        self.enter_button.grid(column=0,row=0,sticky = "NESW")
+
         #Create two buttons
-        self.play_button = bsha.BetterShadow(300, 150, self, "PLAY AGAIN")
-        self.menu_button = bsha.BetterShadow(300, 150, self, "MAIN MENU")
+        self.play_button = bsha.BetterShadow(200, 100, self, "PLAY AGAIN")
+        self.menu_button = bsha.BetterShadow(200, 100, self, "MAIN MENU")
         
         #Put each button in the right place
         for B in ((0,self.play_button), (1,self.menu_button)):
-            B[1].grid(row=1,column=B[0],padx=10,pady=50)
+            B[1].grid(row=2,column=B[0],padx=(20,0),pady=50)
             B[1].grid_propagate(False)
         
         #Set button commands
