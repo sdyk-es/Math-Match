@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter.constants import FALSE
+from tkinter.constants import DISABLED, FALSE, NORMAL
 from typing import Text
 import BetterShadows as bsha
 import math, random
@@ -26,8 +26,8 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 999
-        self.final_time = 99
+        self.final_score = 300
+        self.final_time = 0
 
         ##ORIGINAL FRAME SETUP
 
@@ -280,19 +280,27 @@ class ResultsScreen(tk.Frame):
         self.text.configure(state = tk.DISABLED)
 
         #Leaderboard
-        self.leaderboard_container = tk.Frame(self ,bg = 'white', width = 280, height=450)
+        self.leaderboard_container = tk.Frame(self, bg = 'white', width = 280, height=450)
         self.leaderboard_container.grid(column = 2, row = 0, rowspan=3, padx=(10,10))
+     
+        self.leaderboard_container.grid_rowconfigure(0, weight = 1)
+        self.leaderboard_container.grid_columnconfigure(0, weight = 1)
+        self.leaderboard_container.grid_propagate(False)
+
+        self.leaderboard = tk.Text(self.leaderboard_container, bg = "white", bd = 0, takefocus = 0, font = ("Open Sans Semiobld","18"), fg = "black")
+        self.leaderboard.grid(column = 0, row = 0, sticky = "NESW")
+        self.leaderboard.configure(selectbackground=self.leaderboard.cget('bg'), selectforeground=self.leaderboard.cget('fg'), state = tk.DISABLED)
 
         #Input
-        self.input_container = tk.Frame(self, width = 330, height = 30)
-        self.input_container.grid(column = 0, row = 1, columnspan=2,sticky='W', padx=(30,0))
-        self.input_container.grid_rowconfigure(0, weight = 1)
-        self.input_container.grid_columnconfigure(0, weight = 1)
-        self.input_container.grid_propagate(False)
+        self.input_b_container = tk.Frame(self, width = 330, height = 30)
+        self.input_b_container.grid(column = 0, row = 1, columnspan=2,sticky='W', padx=(30,0))
+        self.input_b_container.grid_rowconfigure(0, weight = 1)
+        self.input_b_container.grid_columnconfigure(0, weight = 1)
+        self.input_b_container.grid_propagate(False)
 
-        self.input = tk.Entry(self.input_container, font = ("Open Sans Semibold","22"))
-        self.input.grid(row=0,column=0, sticky= 'NESW')
-        self.input_container.grid_propagate(False)
+        self.input_b = tk.Entry(self.input_b_container, font = ("Open Sans Semibold","16"))
+        self.input_b.grid(row=0,column=0, sticky= 'NESW')
+        self.input_b_container.grid_propagate(False)
 
         #Submit Button
         self.enter_button_container = tk.Frame(self, width=120, height=30)
@@ -301,7 +309,8 @@ class ResultsScreen(tk.Frame):
         self.enter_button_container.grid_rowconfigure(0,weight=1)
         self.enter_button_container.grid_propagate(False)
 
-        self.enter_button = tk.Button(self.enter_button_container,text="SUBMIT",bg = 'white',relief = 'flat',bd=0,font = ("Open Sans Semibold","22"))
+        self.enter_button = tk.Button(self.enter_button_container,text = "SUBMIT", bg = 'white', relief = 'flat', bd = 0, font = ("Open Sans Semibold","22"),
+                                      command= lambda : self.add_to_leaderboard(controller))
         self.enter_button.grid(column=0,row=0,sticky = "NESW")
 
         #Create two buttons
@@ -316,6 +325,36 @@ class ResultsScreen(tk.Frame):
         #Set button commands
         self.play_button.button.configure(command = lambda : controller.show_frame(GameScreen))
         self.menu_button.button.configure(command = lambda : controller.show_frame(MainMenu))
+
+    def add_to_leaderboard(self, controller):
+        #https://stackoverflow.com/questions/34061909/how-to-write-at-a-particular-position-in-text-file-without-erasing-original-cont
+        s = self.input_b.get()
+        f = open("leaderboard.txt", "r")
+        f.seek(0)
+        for i in range(10):
+            linestart = f.tell()
+            line = f.readline()
+            if line == "":
+                f.write(s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n")
+                break
+            elif int(line.split(';')[1]) <= controller.final_score:
+                f.seek(linestart)
+                f.write(s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n")
+                break
+        f.close()
+        self.update_leaderboard()
+
+    def update_leaderboard(self):
+        self.leaderboard.configure(state = NORMAL)
+        self.leaderboard.delete("1.0",'end')
+        f = open("leaderboard.txt", "r")
+        for i in range(10):
+            l = f.readline()
+            if l == "":
+                break
+            l = l.split(';')
+            self.leaderboard.insert("end", str(l[0] + " " + l[1] + "pts " + l[2] + "s\n")) 
+        self.leaderboard.configure(state = DISABLED)
 
 
 MathMatch()
