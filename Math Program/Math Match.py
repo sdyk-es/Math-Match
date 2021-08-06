@@ -26,7 +26,7 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 300
+        self.final_score = 500
         self.final_time = 0
 
         ##ORIGINAL FRAME SETUP
@@ -327,20 +327,43 @@ class ResultsScreen(tk.Frame):
         self.menu_button.button.configure(command = lambda : controller.show_frame(MainMenu))
 
     def add_to_leaderboard(self, controller):
-        #https://stackoverflow.com/questions/34061909/how-to-write-at-a-particular-position-in-text-file-without-erasing-original-cont
         s = self.input_b.get()
         f = open("leaderboard.txt", "r")
-        f.seek(0)
+        # print(f.read())
         for i in range(10):
             linestart = f.tell()
             line = f.readline()
             if line == "":
-                f.write(s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n")
+                f.seek(0)
+                newf = f.read()[:linestart]
+                f.seek(0)
+                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart:]
+                
+                f.close()
+                f = open("leaderboard.txt", "w")
+                f.write(newf)
+                f.close()
+                
                 break
             elif int(line.split(';')[1]) <= controller.final_score:
-                f.seek(linestart)
-                f.write(s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n")
+                f.seek(0)
+                newf = f.read()[:linestart]
+                f.seek(0)
+                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart:]
+                
+                f.close()
+                f = open("leaderboard.txt", "w")
+                f.write(newf)
+                f.close()
+                
                 break
+        
+        f.close()
+        f = open("leaderboard.txt", "r+")
+        for i in range(10):
+            f.readline()
+            print(f.tell())
+        f.truncate()
         f.close()
         self.update_leaderboard()
 
