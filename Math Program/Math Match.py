@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox
 from tkinter.constants import DISABLED, FALSE, NORMAL
 from typing import Text
 import BetterShadows as bsha
@@ -26,27 +27,12 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 500
+        self.final_score = 0
         self.final_time = 0
 
-        ##ORIGINAL FRAME SETUP
-
-        #Initialize the array of frames
-        # self.frames = {}
-
-
-        # #Iterate through frames, initialize them and put them in array
-        # for F in (MainMenu, HelpScreen, GameScreen):
-
-        #     frame = F(container, self)
-        #     self.frames[F] = frame
-
-        #     frame.grid(row = 0, column = 0, sticky ="nsew")
-
-
-        # #Make Main Menu the first frame to be seen
+        #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(ResultsScreen)
+        self.show_frame(MainMenu)
 
     #Function to show the desired frame
     def show_frame(self, F):
@@ -326,8 +312,24 @@ class ResultsScreen(tk.Frame):
         self.play_button.button.configure(command = lambda : controller.show_frame(GameScreen))
         self.menu_button.button.configure(command = lambda : controller.show_frame(MainMenu))
 
+        #Make sure leadeaerbord is shown when the screen first opens
+        self.update_leaderboard()
+
+        #Make submit button active
+        self.enter_button.config(state = NORMAL)
+
     def add_to_leaderboard(self, controller):
+        
         s = self.input_b.get()
+
+        if ';' in s:
+            tk.messagebox.showerror("Invalid Name", "Name may not contain the ';' character")
+            return
+
+
+
+
+        self.enter_button.config(state = DISABLED)
         f = open("leaderboard.txt", "r")
         # print(f.read())
         for i in range(10):
@@ -362,7 +364,7 @@ class ResultsScreen(tk.Frame):
         f = open("leaderboard.txt", "r+")
         for i in range(10):
             f.readline()
-            print(f.tell())
+        f.seek(f.tell())
         f.truncate()
         f.close()
         self.update_leaderboard()
