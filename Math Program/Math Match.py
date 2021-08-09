@@ -27,12 +27,12 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 80
+        self.final_score = 0
         self.final_time = 0
 
         #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(ResultsScreen)
+        self.show_frame(MainMenu)
 
     #Function to show the desired frame
     def show_frame(self, F):
