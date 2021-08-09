@@ -27,12 +27,12 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 0
+        self.final_score = 80
         self.final_time = 0
 
         #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(MainMenu)
+        self.show_frame(ResultsScreen)
 
     #Function to show the desired frame
     def show_frame(self, F):
@@ -337,9 +337,9 @@ class ResultsScreen(tk.Frame):
             line = f.readline()
             if line == "":
                 f.seek(0)
-                newf = f.read()[:linestart]
+                newf = f.read()[:linestart-1]
                 f.seek(0)
-                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart:]
+                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart-1:]
                 
                 f.close()
                 f = open("leaderboard.txt", "w")
@@ -349,9 +349,9 @@ class ResultsScreen(tk.Frame):
                 break
             elif int(line.split(';')[1]) <= controller.final_score:
                 f.seek(0)
-                newf = f.read()[:linestart]
+                newf = f.read()[:linestart-1]
                 f.seek(0)
-                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart:]
+                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart-1:]
                 
                 f.close()
                 f = open("leaderboard.txt", "w")
