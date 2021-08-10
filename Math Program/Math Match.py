@@ -3,7 +3,7 @@ import tkinter.messagebox
 from tkinter.constants import DISABLED, FALSE, NORMAL
 from typing import Text
 import BetterShadows as bsha
-import math, random
+import math, random, csv
 from functools import partial
 
 #Should probably include colour constants here
@@ -27,12 +27,12 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 0
+        self.final_score = 500
         self.final_time = 0
 
         #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(MainMenu)
+        self.show_frame(ResultsScreen)
 
     #Function to show the desired frame
     def show_frame(self, F):
@@ -325,48 +325,18 @@ class ResultsScreen(tk.Frame):
         if ';' in s:
             tk.messagebox.showerror("Invalid Name", "Name may not contain the ';' character")
             return
-
-
-
-
         self.enter_button.config(state = DISABLED)
-        f = open("leaderboard.txt", "r")
-        # print(f.read())
-        for i in range(10):
-            linestart = f.tell()
-            line = f.readline()
-            if line == "":
-                f.seek(0)
-                newf = f.read()[:linestart-1]
-                f.seek(0)
-                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart-1:]
-                
-                f.close()
-                f = open("leaderboard.txt", "w")
-                f.write(newf)
-                f.close()
-                
-                break
-            elif int(line.split(';')[1]) <= controller.final_score:
-                f.seek(0)
-                newf = f.read()[:linestart-1]
-                f.seek(0)
-                newf += s+";"+str(controller.final_score)+";"+str(controller.final_time)+";\n"+f.read()[linestart-1:]
-                
-                f.close()
-                f = open("leaderboard.txt", "w")
-                f.write(newf)
-                f.close()
-                
-                break
+
+        with open('leaderboard.csv', 'a+', newline = '') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([s,controller.final_score,controller.final_time])
+
+            reader = csv.reader(csvfile)
+            sortedlist = sorted(reader, key = lambda elem: int(elem[1]), reverse = True) 
+
         
-        f.close()
-        f = open("leaderboard.txt", "r+")
-        for i in range(10):
-            f.readline()
-        f.seek(f.tell())
-        f.truncate()
-        f.close()
+            
+
         self.update_leaderboard()
 
     def update_leaderboard(self):

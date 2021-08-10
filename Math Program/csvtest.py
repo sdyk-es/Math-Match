@@ -1,4 +1,4 @@
-import csv, operator
+import csv
 
 # name = input("what is your name?")
 # score = input("what is your score?")
@@ -9,8 +9,7 @@ import csv, operator
 
 with open('test.csv', 'r', newline = '') as f:
     reader = csv.reader(f)
-
-    sortedlist = sorted(reader, key=operator.itemgetter(1))
+    sortedlist = sorted(reader, key = lambda elem: int(elem[1]), reverse = True) 
     for line in sortedlist:
-        print(line)
+        print(line[0] + " reached " + line[1] + " points in " + line[2] + " seconds!")
     
