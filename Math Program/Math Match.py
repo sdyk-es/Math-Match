@@ -27,12 +27,12 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 500
+        self.final_score = 0
         self.final_time = 0
 
         #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(ResultsScreen)
+        self.show_frame(MainMenu)
 
     #Function to show the desired frame
     def show_frame(self, F):
@@ -328,27 +328,30 @@ class ResultsScreen(tk.Frame):
         self.enter_button.config(state = DISABLED)
 
         with open('leaderboard.csv', 'a+', newline = '') as csvfile:
+            csvfile.seek(0)
+            reader = list(csv.reader(csvfile))+[[s,controller.final_score,controller.final_time]]
+            sortedlist = sorted(reader, key = lambda elem: int(elem[1]), reverse = True)
+
+        with open('leaderboard.csv', 'w', newline = '') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow([s,controller.final_score,controller.final_time])
-
-            reader = csv.reader(csvfile)
-            sortedlist = sorted(reader, key = lambda elem: int(elem[1]), reverse = True) 
-
+            for i in range(min(len(sortedlist),10)):
+                writer.writerow(sortedlist[i])
         
-            
-
         self.update_leaderboard()
 
     def update_leaderboard(self):
         self.leaderboard.configure(state = NORMAL)
-        self.leaderboard.delete("1.0",'end')
-        f = open("leaderboard.txt", "r")
-        for i in range(10):
-            l = f.readline()
-            if l == "":
-                break
-            l = l.split(';')
-            self.leaderboard.insert("end", str(l[0] + " " + l[1] + "pts " + l[2] + "s\n")) 
+        self.leaderboard.delete("1.0","end")
+        
+        self.leaderboard.insert("end", "Leaderboard\n\n")
+
+        with open("leaderboard.csv", "a+", newline = '') as csvfile:
+            csvfile.seek(0)
+            reader = csv.reader(csvfile)
+            for line in reader:
+                self.leaderboard.insert("end", str(line[0])+": "+str(line[1]+"pts "+str(line[2])+"s\n"))
+
+
         self.leaderboard.configure(state = DISABLED)
 
 
