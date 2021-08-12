@@ -27,12 +27,12 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 0
-        self.final_time = 0
+        self.final_score = 400
+        self.final_time = 100
 
         #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(MainMenu)
+        self.show_frame(ResultsScreen)
 
     #Function to show the desired frame
     def show_frame(self, F):
@@ -259,21 +259,21 @@ class ResultsScreen(tk.Frame):
         self.text_container.grid_propagate(False)
 
         #Create text widget
-        self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","30"), fg = "black")
+        self.text = tk.Text(self.text_container, bg = '#E8E8E8', height = 1, bd = 0, takefocus = 0, font = ("Open Sans Semibold","29"), fg = "black")
         self.text.grid(column = 0, row = 0, sticky = 'NESW')
         self.text.insert('end', "Final Score: " + str(controller.final_score) + " Points\nFinal Time: " + str(controller.final_time) + " Seconds")
         self.text.configure(selectbackground=self.text.cget('bg'), selectforeground=self.text.cget('fg'))
         self.text.configure(state = tk.DISABLED)
 
         #Leaderboard
-        self.leaderboard_container = tk.Frame(self, bg = 'white', width = 280, height=450)
+        self.leaderboard_container = tk.Frame(self, bg = 'white', width = 301, height=450)
         self.leaderboard_container.grid(column = 2, row = 0, rowspan=3, padx=(10,10))
      
         self.leaderboard_container.grid_rowconfigure(0, weight = 1)
         self.leaderboard_container.grid_columnconfigure(0, weight = 1)
         self.leaderboard_container.grid_propagate(False)
 
-        self.leaderboard = tk.Text(self.leaderboard_container, bg = "white", bd = 0, takefocus = 0, font = ("Open Sans Semiobld","18"), fg = "black")
+        self.leaderboard = tk.Text(self.leaderboard_container, bg = "white", bd = 0, takefocus = 0, font = ("Oxygen Mono","16"), fg = "black")
         self.leaderboard.grid(column = 0, row = 0, sticky = "NESW")
         self.leaderboard.configure(selectbackground=self.leaderboard.cget('bg'), selectforeground=self.leaderboard.cget('fg'), state = tk.DISABLED)
 
@@ -322,9 +322,13 @@ class ResultsScreen(tk.Frame):
         
         s = self.input_b.get()
 
-        if ';' in s:
-            tk.messagebox.showerror("Invalid Name", "Name may not contain the ';' character")
+        if s.isalpha() == False:
+            tk.messagebox.showerror("Invalid Name", "Name must only contain letters")
             return
+        elif len(s) > 10:
+            tk.messagebox.showerror("Invalid Name", "Name maust be 10 characters or less")
+            return
+
         self.enter_button.config(state = DISABLED)
 
         with open('leaderboard.csv', 'a+', newline = '') as csvfile:
