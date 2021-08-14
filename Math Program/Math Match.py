@@ -27,12 +27,12 @@ class MathMatch():
         self.container.grid_columnconfigure(0, weight = 1)
 
         #Variables for results screen
-        self.final_score = 400
-        self.final_time = 100
+        self.final_score = 0
+        self.final_time = 0
 
         #Make Main Menu the first frame to be seen
         self.frame = MainMenu(self.container, self)
-        self.show_frame(ResultsScreen)
+        self.show_frame(MainMenu)
 
     #Function to show the desired frame
     def show_frame(self, F):
@@ -326,7 +326,7 @@ class ResultsScreen(tk.Frame):
             tk.messagebox.showerror("Invalid Name", "Name must only contain letters")
             return
         elif len(s) > 10:
-            tk.messagebox.showerror("Invalid Name", "Name maust be 10 characters or less")
+            tk.messagebox.showerror("Invalid Name", "Name must be 10 characters or less")
             return
 
         self.enter_button.config(state = DISABLED)
@@ -338,7 +338,7 @@ class ResultsScreen(tk.Frame):
 
         with open('leaderboard.csv', 'w', newline = '') as csvfile:
             writer = csv.writer(csvfile)
-            for i in range(min(len(sortedlist),10)):
+            for i in range(min(len(sortedlist),14)):
                 writer.writerow(sortedlist[i])
         
         self.update_leaderboard()
