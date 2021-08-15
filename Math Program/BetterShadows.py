@@ -3,7 +3,7 @@ import tkinter as tk
 
 class BetterShadow(tk.Frame):
     def __init__(self, width, height, parent, text):
-        tk.Frame.__init__(self, parent, width = width+5, height = height+5, bg = "RED", borderwidth=0)
+        tk.Frame.__init__(self, parent, width = width+5, height = height+5, bg = 'white', borderwidth=0)
 
         #Prepare images 
         self.bottom = tk.PhotoImage(file="assets/Shadows/Shadow2.gif")
