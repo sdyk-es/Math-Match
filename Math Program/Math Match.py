@@ -6,6 +6,7 @@ from functools import partial
 import math
 import random
 import csv
+import pyglet
 
 # Colour Constants
 BG_GREY = '#E8E8E8'
@@ -13,6 +14,9 @@ BUTTON_PRESSED = '#F0F0F0'
 BUTTON_GREEN = '#03FC8C'
 BUTTON_RED = '#E32222'
 
+# Load Fonts
+for font in ["OpenSans-SemiBold","OxygenMono-Regular"]:
+    pyglet.font.add_file("assets/fonts/"+font+".ttf")
 
 # Main Program Class
 class MathMatch():
